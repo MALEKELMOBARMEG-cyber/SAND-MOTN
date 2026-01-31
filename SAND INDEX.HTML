@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منظومة سند الرقمية 2026 | الإصدار السيادي</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root { --primary: #0f172a; --accent: #f59e0b; --success: #10b981; }
+        body { font-family: 'Cairo', sans-serif; background: #020617; color: #f8fafc; overflow-x: hidden; scroll-behavior: smooth; }
+        
+        /* التنسيقات الزجاجية المتقدمة */
+        .glass-card { background: rgba(30, 41, 59, 0.4); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 2rem; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .glass-card:hover { border-color: var(--accent); transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+        
+        /* محرك الأنيميشن */
+        .page-section { display: none; opacity: 0; transform: translateY(20px); transition: all 0.6s ease-out; }
+        .active { display: block; opacity: 1; transform: translateY(0); }
+        
+        @keyframes pulse-gold { 0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); } 70% { box-shadow: 0 0 0 15px rgba(245, 158, 11, 0); } 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); } }
+        .btn-gold { background: var(--accent); color: var(--primary); font-weight: 900; transition: all 0.3s; }
+        .btn-gold:hover { background: #fff; transform: scale(1.05); animation: pulse-gold 1.5s infinite; }
+
+        /* الشات */
+        .chat-container::-webkit-scrollbar { width: 4px; }
+        .chat-container::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
+        .msg { padding: 12px 18px; border-radius: 1.2rem; margin-bottom: 12px; max-width: 85%; line-height: 1.5; font-size: 0.95rem; }
+        .msg-bot { background: #1e293b; color: #f1f5f9; align-self: flex-start; border-bottom-right-radius: 4px; }
+        .msg-user { background: var(--accent); color: #020617; align-self: flex-end; margin-left: auto; border-bottom-left-radius: 4px; font-weight: 600; }
+
+        /* لودينج */
+        .loader { width: 48px; height: 48px; border: 5px solid #FFF; border-bottom-color: var(--accent); border-radius: 50%; display: inline-block; animation: rotation 1s linear infinite; }
+        @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        /* --- موبايل فريندلي كود (Mobile Responsive Engine) --- */
+
+@media (max-width: 768px) {
+    /* 1. تظبط المسافات الجانبية في الموبايل */
+    main {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+        padding-top: 6rem !important; /* عشان الهيدر ميتغطاش */
+    }
+
+    /* 2. تصغير العناوين الضخمة عشان متخرجش بره الشاشة */
+    h1 {
+        font-size: 2.5rem !important;
+        line-height: 1.2 !important;
+        text-align: center;
+    }
+
+    /* 3. تحويل أي شبكة (Grid) لعمود واحد */
+    .grid {
+        grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+        gap: 1.5rem !important;
+    }
+
+    /* 4. تعديل الهيدر (الناف بار) للموبايل */
+    nav .container {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    #navUser {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* 5. الشات بوت ياخد مساحة الشاشة كلها */
+    #support .glass-card {
+        height: 80vh !important;
+        border-radius: 1rem !important;
+    }
+
+    /* 6. إخفاء العناصر غير الضرورية في الموبايل لتقليل الزحمة */
+    .hidden-mobile {
+        display: none !important;
+    }
+
+    /* 7. كروت الخدمات تكون أصغر شوية */
+    .glass-card {
+        padding: 1.5rem !important;
+    }
+
+    /* 8. تظبيط الصور */
+    img.animate-float {
+        max-width: 250px !important;
+        margin: 0 auto;
+    }
+}
+
+/* إضافة لمسة جمالية للهواتف الحديثة (Safe Area) */
+@supports (padding: env(safe-area-inset-bottom)) {
+    nav {
+        padding-top: env(safe-area-inset-top);
+    }
+}
+    </style>
+    
+</head>
+<body>
+
+    <div id="authOverlay" class="fixed inset-0 z-[9999] bg-slate-950 flex items-center justify-center p-6">
+        <div class="glass-card max-w-4xl w-full flex flex-col md:flex-row overflow-hidden border-amber-500/20 shadow-2xl">
+            <div class="md:w-1/2 p-12 bg-gradient-to-br from-slate-900 to-slate-950 flex flex-col justify-center border-l border-white/5">
+                <div class="w-16 h-16 bg-amber-500 rounded-2xl flex items-center justify-center mb-8 shadow-lg shadow-amber-500/20">
+                    <i class="fas fa-landmark-flag text-3xl text-slate-900"></i>
+                </div>
+                <h2 class="text-4xl font-black mb-4 leading-tight">منظومة <span class="text-amber-500">سـنـد</span> <br> الرقمية الموحدة</h2>
+                <p class="text-slate-400 font-bold mb-6">رؤية مصر 2026: خدمات ذكية، آمنة، وفورية لجميع المواطنين.</p>
+                <div class="flex gap-4 text-xs font-black text-slate-500 uppercase tracking-widest">
+                    <span><i class="fas fa-shield-halved text-amber-500 ml-1"></i> تشفير سيادي</span>
+                    <span><i class="fas fa-bolt text-amber-500 ml-1"></i> سرعة معالجة</span>
+                </div>
+            </div>
+            <div class="md:w-1/2 p-12 bg-white/5 flex flex-col justify-center">
+                <div class="space-y-5">
+                    <div>
+                        <label class="text-xs font-black text-slate-500 block mb-2 mr-1 uppercase">الاسم الثلاثي كما في البطاقة</label>
+                        <input type="text" id="userNameInput" class="w-full bg-slate-800/50 border border-white/10 p-4 rounded-xl outline-none focus:border-amber-500 transition-all font-bold" placeholder="محمد أحمد علي">
+                    </div>
+                    <div>
+                        <label class="text-xs font-black text-slate-500 block mb-2 mr-1 uppercase">الصورة الشخصية (الهوية الرقمية)</label>
+                        <input type="file" id="userImgInput" class="hidden">
+                        <label for="userImgInput" class="w-full bg-slate-800/50 border border-dashed border-white/20 p-6 rounded-xl block text-center cursor-pointer hover:border-amber-500 transition">
+                            <i class="fas fa-cloud-arrow-up text-2xl text-slate-400 mb-2"></i>
+                            <p class="text-xs font-bold text-slate-500">اضغط لرفع الصورة الشخصية</p>
+                        </label>
+                    </div>
+                    <button onclick="loginSystem()" class="w-full btn-gold py-5 rounded-xl text-lg shadow-xl">دخول المنظومة</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <nav id="navBar" class="fixed top-0 w-full z-[1000] border-b border-white/5 bg-slate-950/80 backdrop-blur-xl hidden">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-10">
+                <div class="flex items-center gap-3 cursor-pointer group" onclick="showPage('home')">
+                    <div class="w-10 h-10 bg-amber-500 rounded-xl flex items-center justify-center text-slate-900 font-black group-hover:rotate-12 transition">س</div>
+                    <span class="text-2xl font-black tracking-tighter">سـنـد <span class="text-amber-500 text-sm">2026</span></span>
+                </div>
+                <div class="hidden lg:flex gap-8">
+                    <button onclick="showPage('home')" class="font-bold hover:text-amber-500 transition">الرئيسية</button>
+                    <button onclick="showPage('services')" class="font-bold hover:text-amber-500 transition">بوابة الخدمات</button>
+                    <button onclick="showPage('account')" class="font-bold text-blue-400 hover:text-blue-300">حسابي (تجريبي)</button>
+                    <button onclick="showPage('news')" class="font-bold hover:text-amber-500 transition">المركز الإعلامي</button>
+                    <button onclick="showPage('support')" class="font-bold hover:text-amber-500 transition">الدعم الموحد</button>
+                </div>
+            </div>
+            <div id="navUser" class="flex items-center gap-4 bg-white/5 p-1 pr-4 rounded-full border border-white/10">
+                <div class="text-left hidden md:block leading-none">
+                    <p id="displayUserName" class="text-xs font-black">...</p>
+                    <span class="text-[9px] font-bold text-green-500 uppercase tracking-widest">مواطن مفعل</span>
+                </div>
+                <img id="displayUserImg" src="" class="w-10 h-10 rounded-full border-2 border-amber-500 object-cover shadow-lg">
+            </div>
+        </div>
+    </nav>
+
+    <main id="mainWrap" class="pt-32 pb-20 container mx-auto px-6 hidden">
+        
+        <section id="home" class="page-section active">
+            <div class="grid lg:grid-cols-2 gap-16 items-center min-h-[60vh]">
+                <div class="space-y-8 text-right">
+                    <div class="inline-block bg-amber-500/10 text-amber-500 px-4 py-1 rounded-full text-xs font-black tracking-widest border border-amber-500/20">تحديثات المنظومة مباشرة</div>
+                    <h1 class="text-7xl font-black leading-[1.1]">مستقبلك <br> الرقمي يبدأ <span class="text-amber-500">هنا.</span></h1>
+                    <p class="text-slate-400 text-xl leading-relaxed max-w-xl">سند هي بوابتك الموحدة للوصول لأكثر من 500 خدمة حكومية بذكاء اصطناعي فائق السرعة.</p>
+                    <div class="flex flex-wrap gap-4">
+                        <button onclick="showPage('services')" class="btn-gold px-12 py-5 rounded-2xl text-xl shadow-2xl">استعرض الخدمات</button>
+                        <button class="bg-white/5 border border-white/10 px-12 py-5 rounded-2xl font-black text-xl hover:bg-white/10 transition">شرح المنصة</button>
+                    </div>
+                </div>
+                <div class="relative">
+                    <div class="absolute -inset-10 bg-amber-500/20 blur-[100px] rounded-full"></div>
+                    <img src="https://ouch-cdn2.icons8.com/mS_m8tYvO70S0G22I9_XnE9-vYvF39k5I8zWfM_u89w/rs:fit:368:368/czM6Ly9pY29uczgu/b3VjaC1wcm9kLmFz/c2V0cy9zdmcvNzE2/L2ZiN2ZlZTgxLTY0/MmEtNDU0OC05MTlj/LTc3NmE5ZjUyMzQx/Zi5zdmc.png" class="w-full max-w-lg mx-auto relative z-10 animate-float" style="animation: float 5s ease-in-out infinite;">
+                </div>
+            </div>
+        </section>
+
+        <section id="services" class="page-section">
+            <div class="flex justify-between items-end mb-12">
+                <div>
+                    <h2 class="text-4xl font-black mb-3">بوابة الخدمات الذكية</h2>
+                    <p class="text-slate-500 font-bold uppercase tracking-widest text-xs">اختر الخدمة المطلوبة لبدء المعاملة فوراً</p>
+                </div>
+                <div class="flex gap-2 bg-white/5 p-2 rounded-2xl border border-white/10">
+                    <button class="bg-amber-500 text-slate-900 px-6 py-2 rounded-xl font-black text-xs">الكل</button>
+                    <button class="px-6 py-2 rounded-xl font-black text-xs text-slate-400 hover:text-white transition">الأكثر طلباً</button>
+                </div>
+            </div>
+            <div id="servicesContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                </div>
+        </section>
+
+        <section id="account" class="page-section">
+            <div class="grid lg:grid-cols-3 gap-8">
+                <div class="glass-card p-10 text-center border-amber-500/10">
+                    <div class="relative inline-block mb-6">
+                        <img id="dashUserImg" src="" class="w-32 h-32 rounded-[2.5rem] object-cover border-4 border-amber-500 shadow-2xl">
+                        <div class="absolute -bottom-2 -right-2 bg-green-500 w-8 h-8 rounded-full border-4 border-slate-950"></div>
+                    </div>
+                    <h3 id="dashUserName" class="text-2xl font-black mb-1">...</h3>
+                    <p class="text-amber-500 font-black text-xs uppercase tracking-widest mb-8">Identity Verified</p>
+                    
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center p-4 bg-white/5 rounded-2xl">
+                            <span class="text-xs font-bold text-slate-500 uppercase">الرقم القومي</span>
+                            <span class="font-mono text-sm">2990101XXXXXXX</span>
+                        </div>
+                        <div class="flex justify-between items-center p-4 bg-white/5 rounded-2xl border border-green-500/20">
+                            <span class="text-xs font-bold text-slate-500 uppercase">المحفظة الرقمية</span>
+                            <span class="text-green-500 font-black">1,450.00 ج.م</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="lg:col-span-2 space-y-8">
+                    <div class="glass-card p-8">
+                        <h4 class="text-xl font-black mb-8 flex items-center gap-3">
+                            <i class="fas fa-chart-line text-amber-500"></i> نشاط استهلاك الخدمات السنوي
+                        </h4>
+                        <canvas id="usageChart" height="140"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="news" class="page-section">
+            <h2 class="text-4xl font-black mb-12">المركز الإعلامي للدولة</h2>
+            <div id="newsContainer" class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                </div>
+        </section>
+
+        <section id="support" class="page-section">
+            <div class="max-w-4xl mx-auto glass-card h-[650px] flex flex-col overflow-hidden border-amber-500/10 shadow-2xl">
+                <div class="p-6 bg-slate-900/50 border-b border-white/5 flex justify-between items-center">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-amber-500 rounded-2xl flex items-center justify-center text-slate-950 shadow-lg">
+                            <i class="fas fa-robot text-2xl"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-black">مساعد سند الذكي</h4>
+                            <p class="text-[10px] text-green-500 font-black uppercase flex items-center gap-1">
+                                <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span> متصل الآن
+                            </p>
+                        </div>
+                    </div>
+                    <button class="text-slate-500 hover:text-white transition"><i class="fas fa-ellipsis-v"></i></button>
+                </div>
+                <div id="chatWindow" class="flex-1 p-8 overflow-y-auto flex flex-col chat-container">
+                    <div class="msg msg-bot">أهلاً بك يا مواطن! أنا ذكاء اصطناعي مخصص لخدمتك. هل تريد الاستعلام عن "مخالفات المرور" أم "تجديد البطاقة"؟</div>
+                </div>
+                <div class="p-6 bg-slate-950/80 flex gap-4 border-t border-white/5">
+                    <input type="text" id="chatInput" placeholder="اكتب استفسارك هنا بكل وضوح..." class="flex-1 bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-amber-500 transition-all font-bold">
+                    <button onclick="sendChatMessage()" class="btn-gold px-8 rounded-2xl shadow-xl hover:scale-105 transition">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <div id="toast" class="fixed bottom-10 left-10 z-[5000] hidden">
+        <div class="bg-amber-500 text-slate-950 px-8 py-4 rounded-2xl font-black shadow-2xl flex items-center gap-3 animate-bounce">
+            <i class="fas fa-bell"></i>
+            <span id="toastMsg">تم تنفيذ العملية بنجاح!</span>
+        </div>
+    </div>
+
+    <script>
+        // --- البيانات المركزية (Database Simulation) ---
+        const servicesData = [
+            { id: 1, title: "تجديد بطاقة الرقم القومي", icon: "fa-id-card", color: "blue", cat: "الأحوال المدنية" },
+            { id: 2, title: "سداد مخالفات المرور", icon: "fa-car-burst", color: "amber", cat: "نيابة المرور" },
+            { id: 3, title: "توثيق توكيل رسمي", icon: "fa-file-signature", color: "emerald", cat: "الشهر العقاري" },
+            { id: 4, title: "استخراج شهادة ميلاد", icon: "fa-baby", color: "indigo", cat: "الأحوال المدنية" },
+            { id: 5, title: "صرف التموين الرقمي", icon: "fa-basket-shopping", color: "orange", cat: "وزارة التموين" },
+            { id: 6, title: "حجز كشف طبي", icon: "fa-user-doctor", color: "rose", cat: "التأمين الصحي" },
+            { id: 7, title: "تجديد رخصة القيادة", icon: "fa-id-badge", color: "amber", cat: "نيابة المرور" },
+            { id: 8, title: "صحيفة الحالة الجنائية", icon: "fa-fingerprint", color: "slate", cat: "وزارة الداخلية" }
+        ];
+
+        const newsData = [
+            { title: "افتتاح مراكز سند الرقمية في كافة محافظات الجمهورية", img: "https://images.unsplash.com/photo-1573163281530-5be9c2948c3e?w=600", date: "31 يناير 2026" },
+            { title: "إطلاق التوقيع الإلكتروني الموحد لجميع المواطنين", img: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=600", date: "28 يناير 2026" },
+            { title: "تخفيض رسوم الخدمات الرقمية بنسبة 30% بمناسبة العام الجديد", img: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600", date: "25 يناير 2026" }
+        ];
+
+        let currentUser = { name: "", img: "" };
+
+        // --- محرك الدخول (Auth Engine) ---
+        function loginSystem() {
+            const name = document.getElementById('userNameInput').value;
+            const file = document.getElementById('userImgInput').files[0];
+
+            if(!name || name.length < 5) {
+                alert("برجاء إدخال اسمك الرباعي الصحيح.");
+                return;
+            }
+
+            currentUser.name = name;
+            document.getElementById('displayUserName').innerText = name;
+            document.getElementById('dashUserName').innerText = name;
+
+            if(file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    currentUser.img = e.target.result;
+                    document.getElementById('displayUserImg').src = e.target.result;
+                    document.getElementById('dashUserImg').src = e.target.result;
+                    launchPortal();
+                }
+                reader.readAsDataURL(file);
+            } else {
+                currentUser.img = "https://i.pravatar.cc/150?u=sanad";
+                document.getElementById('displayUserImg').src = currentUser.img;
+                document.getElementById('dashUserImg').src = currentUser.img;
+                launchPortal();
+            }
+        }
+
+        function launchPortal() {
+            document.getElementById('authOverlay').style.display = 'none';
+            document.getElementById('navBar').classList.remove('hidden');
+            document.getElementById('mainWrap').classList.remove('hidden');
+            
+            buildServices();
+            buildNews();
+            initCharts();
+            showToast(`أهلاً بك يا ${currentUser.name.split(' ')[0]} في منصة سند.`);
+        }
+
+        // --- محرك الصفحات (Router) ---
+        function showPage(pageId) {
+            document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // --- محرك بناء الخدمات (Services Engine) ---
+        function buildServices() {
+            const container = document.getElementById('servicesContainer');
+            container.innerHTML = servicesData.map(s => `
+                <div class="glass-card p-8 group cursor-pointer" onclick="openServiceWindow('${s.title}')">
+                    <div class="w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-amber-500 group-hover:text-slate-900 transition-all duration-500">
+                        <i class="fas ${s.icon} text-2xl"></i>
+                    </div>
+                    <span class="text-[10px] font-black text-amber-500 uppercase tracking-widest">${s.cat}</span>
+                    <h4 class="text-xl font-black mt-2 mb-6 leading-tight">${s.title}</h4>
+                    <div class="flex items-center gap-2 text-xs font-black text-slate-500 group-hover:text-white transition">
+                        ابدأ الخدمة الآن <i class="fas fa-arrow-left"></i>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openServiceWindow(name) {
+            const container = document.getElementById('services');
+            container.innerHTML = `
+                <div class="max-w-2xl mx-auto glass-card p-12 text-center animate-fadeIn">
+                    <h2 class="text-3xl font-black mb-8">طلب: ${name}</h2>
+                    <div class="space-y-6 text-right">
+                        <div>
+                            <label class="text-xs font-bold text-slate-500 mr-2 uppercase">الرقم القومي (14 رقم)</label>
+                            <input type="number" id="sid" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl outline-none focus:border-amber-500 font-mono" placeholder="29900000000000">
+                        </div>
+                        <div class="p-6 bg-amber-500/10 rounded-2xl border border-amber-500/20">
+                            <p class="text-sm font-bold text-amber-500">رسوم المعاملة: 175.00 ج.م</p>
+                            <p class="text-[10px] text-slate-400 mt-1 italic">سيتم الخصم من المحفظة الرقمية الموحدة</p>
+                        </div>
+                        <button onclick="confirmService('${name}')" class="w-full btn-gold py-5 rounded-2xl shadow-2xl">تأكيد العملية والدفع</button>
+                        <button onclick="buildServices(); showPage('services')" class="w-full text-slate-500 font-bold text-sm">إلغاء والعودة</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function confirmService(name) {
+            const sid = document.getElementById('sid').value;
+            if(sid.length !== 14) return alert("خطأ: الرقم القومي غير صحيح.");
+
+            document.getElementById('services').innerHTML = `<div class="text-center py-20"><span class="loader"></span><p class="mt-4 font-black">جاري المعالجة السيادية...</p></div>`;
+            
+            setTimeout(() => {
+                document.getElementById('services').innerHTML = `
+                    <div class="max-w-xl mx-auto glass-card p-12 text-center border-green-500/30">
+                        <i class="fas fa-circle-check text-7xl text-green-500 mb-6"></i>
+                        <h2 class="text-3xl font-black mb-2">تم التقديم بنجاح!</h2>
+                        <p class="text-slate-400 font-bold mb-8">رقم الطلب: #SN-${Math.floor(Math.random()*999999)}</p>
+                        <div class="bg-white/5 p-6 rounded-2xl text-right space-y-2 mb-8 text-sm">
+                            <p><b>المواطن:</b> ${currentUser.name}</p>
+                            <p><b>الخدمة:</b> ${name}</p>
+                            <p><b>موعد التنفيذ:</b> خلال 24 ساعة</p>
+                        </div>
+                        <button onclick="buildServices(); showPage('services')" class="w-full bg-white/10 py-4 rounded-xl font-black">عودة للخدمات</button>
+                    </div>
+                `;
+                showToast("تم خصم الرسوم بنجاح.");
+            }, 2500);
+        }
+
+        // --- محرك الأخبار (News Engine) ---
+        function buildNews() {
+            document.getElementById('newsContainer').innerHTML = newsData.map(n => `
+                <div class="glass-card overflow-hidden group">
+                    <div class="h-52 overflow-hidden">
+                        <img src="${n.img}" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                    </div>
+                    <div class="p-8">
+                        <span class="text-amber-500 font-black text-[10px] uppercase tracking-tighter">${n.date}</span>
+                        <h4 class="text-xl font-black mt-3 leading-snug group-hover:text-amber-500 transition">${n.title}</h4>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // --- محرك الشات بوت (AI Engine) ---
+        function sendChatMessage() {
+            const input = document.getElementById('chatInput');
+            const window = document.getElementById('chatWindow');
+            if(!input.value) return;
+
+            window.innerHTML += `<div class="msg msg-user">${input.value}</div>`;
+            const query = input.value.toLowerCase();
+            input.value = '';
+            window.scrollTop = window.scrollHeight;
+
+            setTimeout(() => {
+                let reply = "عذراً يا فندم، لم أفهم استفسارك. هل يمكنك كتابة 'بطاقة' أو 'مرور'؟";
+                if(query.includes("بطاقة") || query.includes("رقم قومي")) reply = "لتجديد البطاقة، ادخل على 'بوابة الخدمات' واختر 'تجديد الرقم القومي'. ستحتاج لصورة شخصية فقط.";
+                if(query.includes("مرور") || query.includes("سيارة")) reply = "مخالفات سيارتك الحالية هي 0 جنيهاً. يمكنك طباعة شهادة براءة الذمة من قسم المرور.";
+                if(query.includes("شكرا")) reply = "في خدمتك دائماً! سند وجد لراحتك.";
+
+                window.innerHTML += `<div class="msg msg-bot">${reply}</div>`;
+                window.scrollTop = window.scrollHeight;
+            }, 1000);
+        }
+
+        // --- محرك الرسوم البيانية (Analytics Engine) ---
+        function initCharts() {
+            const ctx = document.getElementById('usageChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['أكتوبر', 'نوفمبر', 'ديسمبر', 'يناير'],
+                    datasets: [{
+                        label: 'عدد الطلبات',
+                        data: [5, 12, 18, 25],
+                        borderColor: '#f59e0b',
+                        backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        borderWidth: 4,
+                        pointRadius: 6,
+                        pointBackgroundColor: '#f59e0b'
+                    }]
+                },
+                options: {
+                    plugins: { legend: { display: false } },
+                    scales: { 
+                        y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#64748b', font: { family: 'Cairo' } } },
+                        x: { grid: { display: false }, ticks: { color: '#64748b', font: { family: 'Cairo' } } }
+                    }
+                }
+            });
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            document.getElementById('toastMsg').innerText = msg;
+            t.style.display = 'block';
+            setTimeout(() => t.style.display = 'none', 4000);
+        }
+
+        // تجهيز المستند
+        window.onload = () => { console.log("نظام سند جاهز للعمل - إصدار 2026 السيادي"); };
+    </script>
+</body>
+</html>
